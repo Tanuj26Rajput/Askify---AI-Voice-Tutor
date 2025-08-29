@@ -2,6 +2,8 @@
 <img width="4000" height="1200" alt="image" src="https://github.com/user-attachments/assets/78fcebb4-67bc-410d-b0e5-61df6311946e" />
 
 ## Table of contents
+<!-- toc -->
+
 [Murf Coding Challenge](#murf-coding-challenge)
 [What is Askify](#🔍-What-is-Askify)
 [Why did we build this](#🎯-Why-did-we-build-this?)
@@ -10,6 +12,7 @@
 [Tech-Stack](#🚀-Tech-Stack)
 Built by Murf and Gemini
 
+<!-- tocstop -->
 🔍 What is Askify?
 Askify is like having a personal AI tutor sitting beside you.
 You can ask it questions by typing or speaking, and it will:
