@@ -1,4 +1,5 @@
-from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+# from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+import google.generativeai as genai
 from langgraph.graph import StateGraph, START, END
 from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
@@ -11,11 +12,19 @@ import re
 load_dotenv()
 MURFAI_API_KEY=os.getenv("MURFAI_API_KEY")
 
-llm = HuggingFaceEndpoint(
-    repo_id="Qwen/Qwen3-Coder-480B-A35B-Instruct",
-    task="text-generation"
-)
-model = ChatHuggingFace(llm=llm)
+# llm = HuggingFaceEndpoint(
+#     repo_id="Qwen/Qwen3-Coder-480B-A35B-Instruct",
+#     task="text-generation"
+# )
+# model = ChatHuggingFace(llm=llm)
+
+def ask_gemini(prompt: str) -> str:
+    try:
+        model = genai.GenerativeModel("gemini-pro")
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        return f"[gemini failed: {e}]"
 
 class agentstate(TypedDict):
     query: str
@@ -54,8 +63,8 @@ prompt_summary = PromptTemplate(
 def generate_explanation(state: agentstate) -> agentstate:
     prompt_text = prompt_explanation.format(query=state['query'])
     try:
-        response = model.invoke(prompt_text)
-        state['explanation'] = response.content.strip()
+        response = ask_gemini(prompt_text)
+        state['explanation'] = response
     except Exception as e:
         state['explanation'] = f"Sorry, i couldn't generate explanation due to error: {e}"
     return state
@@ -63,8 +72,8 @@ def generate_explanation(state: agentstate) -> agentstate:
 def generate_summary(state: agentstate) -> agentstate:
     prompt_text = prompt_summary.format(text=state['explanation'])
     try:
-        response = model.invoke(prompt_text)
-        state['summary'] = response.content.strip()
+        response = ask_gemini(prompt_text)
+        state['summary'] = response
     except Exception as e:
         state['summary'] = f"Sorry, i couldn't generate summary due to error: {e}"
     
