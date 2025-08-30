@@ -62,18 +62,55 @@ def api_dub_start(payload: DubIn):
     job = create_dub_job(file_path=mp4_path, target_locale=payload.target_locale) 
     return {"job_id": job.id}
 
+# @app.get("/api/dub_status")
+# def api_dub_status(job_id: str):
+#     status = poll_job_until_complete(job_id=job_id)
+#     s = str(getattr(status, "status", "")).upper()
+
+#     if s not in ("COMPLETED", "FAILED", "ERROR"):
+#         return {"status": s}
+
+#     # Adapt to MurfDub response fields (names can vary; handle generously)
+#     result = getattr(status, "result", None) or {}
+#     dubbed_video_url = result.get("dubbed_url") or result.get("video_url") or result.get("output_url")
+#     subtitles_url = result.get("subtitles_url") or result.get("srt_url") or result.get("captions_url")
+
+#     notes = None
+#     if subtitles_url:
+#         try:
+#             srt_bytes = download_url_bytes(subtitles_url)
+#             transcript_text = srt_to_plain_text(srt_bytes)
+#             notes = generate_notes_from_text(transcript_text)
+#         except Exception as e:
+#             notes = f"- (Could not generate notes) {e}"
+
+#     return {
+#         "status": s.lower(),
+#         "dubbed_video_url": dubbed_video_url,
+#         "subtitles_url": subtitles_url,
+#         "notes": notes
+#     }
+
 @app.get("/api/dub_status")
 def api_dub_status(job_id: str):
-    status = poll_job_until_complete(job_id=job_id)
+    status = poll_job_until_complete(job_id=job_id)   # ✅ wait until complete
     s = str(getattr(status, "status", "")).upper()
 
     if s not in ("COMPLETED", "FAILED", "ERROR"):
         return {"status": s}
 
-    # Adapt to MurfDub response fields (names can vary; handle generously)
+    # Adapt to MurfDub response fields (handle different naming)
     result = getattr(status, "result", None) or {}
-    dubbed_video_url = result.get("dubbed_url") or result.get("video_url") or result.get("output_url")
-    subtitles_url = result.get("subtitles_url") or result.get("srt_url") or result.get("captions_url")
+    dubbed_video_url = (
+        result.get("dubbed_url")
+        or result.get("video_url")
+        or result.get("output_url")
+    )
+    subtitles_url = (
+        result.get("subtitles_url")
+        or result.get("srt_url")
+        or result.get("captions_url")
+    )
 
     notes = None
     if subtitles_url:
