@@ -62,7 +62,7 @@ def api_dub_start(payload: DubIn):
     job = create_dub_job(file_path=mp4_path, target_locale=payload.target_locale) 
     return {"job_id": job.id}
 
-@app.post("/api/dub_status")
+@app.get("/api/dub_status")
 def api_dub_status(job_id: str):
     status = poll_job_until_complete(job_id=job_id)
     s = str(getattr(status, "status", "")).upper()
