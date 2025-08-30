@@ -12,19 +12,18 @@ import re
 load_dotenv()
 MURFAI_API_KEY=os.getenv("MURFAI_API_KEY")
 
-# llm = HuggingFaceEndpoint(
-#     repo_id="Qwen/Qwen3-Coder-480B-A35B-Instruct",
-#     task="text-generation"
-# )
-# model = ChatHuggingFace(llm=llm)
+client_gemini = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def ask_gemini(prompt: str) -> str:
     try:
-        model = genai.GenerativeModel("gemini-pro")
-        response = model.generate_content(prompt)
+        response = client_gemini.models.generate_content(
+            model = "gemini-2.0-flash",
+            contents = prompt
+        )
         return response.text.strip()
     except Exception as e:
-        return f"[gemini failed: {e}]"
+        print(f"Gemini API error: {e}")
+        return ""
 
 class agentstate(TypedDict):
     query: str
