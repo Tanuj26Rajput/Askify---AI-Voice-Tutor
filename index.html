@@ -213,7 +213,13 @@
     // ===== API calls =====
     async function apiAsk(query){ const t0=performance.now(); const r=await fetch(`${API_BASE}/ask`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({query})}); if(!r.ok) throw new Error('ASK failed '+r.status); const data=await r.json(); setLatency(performance.now()-t0); return data; }
     async function apiDubStart(youtube_url, target_locale){ const r=await fetch(`${API_BASE}/dub`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({youtube_url, target_locale})}); if(!r.ok) throw new Error('DUB start failed '+r.status); return r.json(); }
-    async function apiDubStatus(job_id){ const r=await fetch(`${API_BASE}/dub/status?job_id=${encodeURIComponent(job_id)}`); if(!r.ok) throw new Error('DUB status failed '+r.status); return r.json(); }
+    async function apiDubStatus(job_id){
+      const r=await fetch(`${API_BASE}/dub_status?job_id=${encodeURIComponent(job_id)}`,{
+        method: "POST"
+      });
+      if(!r.ok) throw new Error('DUB status failed '+r.status);
+      return r.json();
+    }
 
     // ===== Chat events =====
     $('#chatForm').addEventListener('submit', (e)=>{ e.preventDefault(); send(); });
