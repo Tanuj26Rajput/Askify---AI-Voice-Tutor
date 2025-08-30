@@ -1,5 +1,5 @@
 # from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
-import google.generativeai as genai
+from google import genai
 from langgraph.graph import StateGraph, START, END
 from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
